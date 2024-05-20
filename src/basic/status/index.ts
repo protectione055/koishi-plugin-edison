@@ -28,13 +28,13 @@ export const Config: Schema<IConfig> = Schema.object({
       sort: Schema.union(['random', 'iw233', 'top', 'yin', 'cat', 'xing', 'mp', 'pc']).default('mp').description('请前往 https://mirlkoi.ifast3.vipnps.vip/API/index.php 来选择你想要的 sort'),
     }).description('随机图片'),
   ]).default('neko').description('请选择你想要的模式'),
-  botName: Schema.string().default('KBot').description('在自检图片中显示的名称(如果不填写则显示机器人的昵称, 不要太长哦)'),
+  botName: Schema.string().default('EDISON').description('在自检图片中显示的名称(如果不填写则显示机器人的昵称, 不要太长哦)'),
 })
 
-export const logger = new Logger('KBot-status')
+export const logger = new Logger('Edison-status')
 
 export async function apply(ctx: Context, config: IConfig) {
-  ctx.command('kbot/body', '检查机器人状态', {
+  ctx.command('edison/body', '检查机器人状态', {
     checkArgCount: true,
     showWarning: false,
   }).shortcut('自检', { fuzzy: false })
@@ -42,7 +42,7 @@ export async function apply(ctx: Context, config: IConfig) {
       if (!ctx.puppeteer)
         return '未安装/启用 puppeteer 插件，无法使用图片渲染'
 
-      const systemInfo = await getSystemInfo(config.botName || session.bot.username, version, pVersion, ctx.registry.size)
+      const systemInfo = await getSystemInfo(config.botName || session.bot.userId, version, pVersion, ctx.registry.size)
 
       if (config?.useModel === 'neko')
         return await renderHtml(ctx, systemInfo)

@@ -18,6 +18,7 @@ import {
   twitterList,
   twitterRemove,
   twitterSearch,
+  twitterToken,
 } from './common'
 import type { IConfig } from '.'
 import { logger } from '.'
@@ -29,6 +30,7 @@ const dynamicStrategies = {
   search: twitterSearch,
   batch: twitterBatch,
   cookie: twitterCookie,
+  token: twitterToken,
 }
 
 export async function dynamicStrategy(
@@ -50,7 +52,7 @@ export async function dynamicStrategy(
     if (Object.keys(dynamicStrategies).includes(strategyName)) {
       let restId: string | string[], twitterName: string | string[], twitterId: string | string[]
 
-      if (!['list', 'batch', 'cookie'].includes(strategyName)) {
+      if (!['list', 'batch', 'cookie', 'token'].includes(strategyName)) {
           twitterId = options[strategyName] as string
         [restId as string, twitterName as string] = await getTwitterRestId(
           twitterId,

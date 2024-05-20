@@ -274,3 +274,46 @@ export async function twitterCookie(
     return `cookie 更新失败: ${err}`
   }
 }
+
+export async function twitterToken(
+  {
+    session,
+    options,
+  }:
+  Argv<never, 'id' | 'guildId' | 'platform' | 'twitter', any, {
+    token: string
+  }>,
+  _twitter: { twitterId: string; twitterName: string; twitterRestId: string },
+  _list: Dict<
+    [
+      Pick<Channel, 'id' | 'guildId' | 'platform' | 'twitter'>,
+      DynamicNotifiction,
+    ][]
+  >,
+  ctx: Context,
+) {
+  try {
+    if (!options.token)
+      return '请提供token'
+
+    const token = options.token
+    ctx.http.config.headers['Authorization'] = `Bearer ${token}`
+
+    const { twitterDir, twitterTokenPath } = GeneratePath.getInstance(ctx.baseDir).getGeneratePathData()
+
+    if (
+      !(await fs.promises.stat(twitterDir)).isDirectory()
+    )
+      await fs.promises.mkdir(twitterDir, { recursive: true })
+    await fs.promises.writeFile(
+      twitterTokenPath,
+      JSON.stringify({ bearer_token: token }),
+    )
+
+    return 'token 更新成功'
+  }
+  catch (err) {
+    logger.error(`Failed to update token. ${err}`)
+    return `token 更新失败: ${err}`
+  }
+}

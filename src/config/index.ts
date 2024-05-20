@@ -12,7 +12,7 @@ import { resolve } from 'node:path'
 
 interface GeneratePathData {
   baseDir: string
-  kbotDir: string
+  edisonDir: string
 
   fontsDir: string
   renderFontsDir: string
@@ -28,6 +28,7 @@ interface GeneratePathData {
 
   twitterDir: string
   twitterCookiePath: string
+  twitterTokenPath: string
 }
 
 class GeneratePath {
@@ -38,8 +39,8 @@ class GeneratePath {
     // baseDir
     const baseDir = resolve(__dirname, path)
 
-    // kbot
-    const kbotDir = resolve(baseDir, 'kbot-data')
+    // edison-data
+    const edisonDir = resolve(baseDir, 'edison-data')
 
     // fonts
     const fontsDir = ''
@@ -52,17 +53,18 @@ class GeneratePath {
     const tarotImagesDir = ''
 
     // bilibili
-    const bilibiliDir = resolve(kbotDir, 'bilibili')
+    const bilibiliDir = resolve(edisonDir, 'bilibili')
     const bilibiliCookiePath = resolve(bilibiliDir, 'cookie.json')
     const bilibiliVupPath = resolve(bilibiliDir, 'vup.json')
 
     // twitter
-    const twitterDir = resolve(kbotDir, 'twitter')
+    const twitterDir = resolve(edisonDir, 'twitter')
     const twitterCookiePath = resolve(twitterDir, 'cookie.json')
+    const twitterTokenPath = resolve(twitterDir, 'token.json')
 
     this.generatePathData = {
       baseDir,
-      kbotDir,
+      edisonDir: edisonDir,
       fontsDir,
       renderFontsDir,
       statusFontsDir,
@@ -74,6 +76,7 @@ class GeneratePath {
       bilibiliVupPath,
       twitterDir,
       twitterCookiePath,
+      twitterTokenPath,
     }
   }
 

@@ -11,15 +11,11 @@
 import fs from 'node:fs'
 import type { Context } from 'koishi'
 import { Logger, Schema } from 'koishi'
+import { Status } from '@satorijs/protocol'
 
 import * as botBasic from './basic'
 
-import * as bilibiliPlugin from './plugins/bilibili'
-import * as musicPlugin from './plugins/music'
-import * as youtubePlugin from './plugins/youtube'
-import * as managePlugin from './plugins/guildManage'
 import * as twitterPlugin from './plugins/twitter'
-import * as tarotPlugin from './plugins/tarot'
 
 import {} from 'koishi-plugin-downloads'
 
@@ -120,12 +116,7 @@ interface IPluginEnableConfig {
 interface IConfig {
   superAdminQQ?: string[]
   KBotBasic?: botBasic.IConfig
-  KBotManage?: managePlugin.IConfig & IPluginEnableConfig
-  // KBotBilibili?: bilibiliPlugin.IConfig & IPluginEnableConfig
-  // KBotMusic?: musicPlugin.IConfig & IPluginEnableConfig
-  // KBotYoutube?: youtubePlugin.IConfig & IPluginEnableConfig
   KBotTwitter?: twitterPlugin.IConfig & IPluginEnableConfig
-  // KBotTarot?: tarotPlugin.IConfig & IPluginEnableConfig
 }
 
 function pluginLoad<T>(schema: Schema<T>): Schema<T & IPluginEnableConfig> {
@@ -148,17 +139,10 @@ function pluginLoad<T>(schema: Schema<T>): Schema<T & IPluginEnableConfig> {
 export const Config: Schema<IConfig> = Schema.object({
   superAdminQQ: Schema.array(String).description('超级管理员QQ号 (必填)'),
   KBotBasic: botBasic.Config,
-  KBotManage: pluginLoad(managePlugin.Config).description('群管理功能'),
-  // KBotBilibili: pluginLoad(bilibiliPlugin.Config).description(
-  //   'Bilibili 动态推送',
-  // ),
-  // KBotMusic: pluginLoad(musicPlugin.Config).description('点歌功能'),
-  // KBotYoutube: pluginLoad(youtubePlugin.Config).description('Youtube 视频解析'),
   KBotTwitter: pluginLoad(twitterPlugin.Config).description('Twitter 动态推送 (必须要 puppeteer)'),
-  // KBotTarot: pluginLoad(tarotPlugin.Config).description('塔罗牌功能'),
 })
 
-export const logger = new Logger('KBot')
+export const logger = new Logger('Edison')
 
 export const using = ['console', 'database', 'downloads'] as const
 
@@ -168,14 +152,14 @@ export async function apply(ctx: Context, config: IConfig) {
   }
   else {
     const generatePath = GeneratePath.getInstance(ctx.baseDir)
-    const { kbotDir } = generatePath.getGeneratePathData()
+    const { edisonDir: kbotDir } = generatePath.getGeneratePathData()
 
     let createFlag = false
     try {
       await fs.promises.readdir(kbotDir)
     }
     catch (e) {
-      logger.error('未找到 kbot-data 文件夹, 正在创建')
+      logger.error('未找到 edison-data 文件夹, 正在创建')
       await fs.promises.mkdir(kbotDir)
       createFlag = true
     }
@@ -199,7 +183,7 @@ export async function apply(ctx: Context, config: IConfig) {
 
     ctx.bots.forEach(async (bot) => {
       if (
-        !['connect', 'online'].includes(bot.status)
+        ![Status.CONNECT, Status.ONLINE].includes(bot.status)
         || bot.platform === 'qqguild'
       )
         return
@@ -226,7 +210,7 @@ export async function apply(ctx: Context, config: IConfig) {
       })
     })
 
-    ctx.command('kbot', 'kbot 相关功能')
+    ctx.command('edison', 'edison 相关功能')
 
     ctx.on('friend-request', async (session) => {
       await ctx.database.getUser(session.platform, session.userId).then(async (user) => {
@@ -244,21 +228,8 @@ export async function apply(ctx: Context, config: IConfig) {
 
     ctx.plugin(botBasic, config.KBotBasic)
 
-    if (config.KBotManage.enabled)
-      ctx.plugin(managePlugin, config.KBotManage)
-    // if (config.KBotBilibili.enabled)
-    //   ctx.plugin(bilibiliPlugin, config.KBotBilibili)
-    // if (config.KBotMusic.enabled)
-    //   ctx.plugin(musicPlugin, config.KBotMusic)
-    // if (config.KBotYoutube.enabled)
-    //   ctx.plugin(youtubePlugin, config.KBotYoutube)
-    if (config.KBotTwitter.enabled)
-      ctx.plugin(twitterPlugin, config.KBotTwitter)
-    // if (config.KBotTarot.enabled)
-    //   ctx.plugin(tarotPlugin, config.KBotTarot)
+    ctx.plugin(twitterPlugin, config.KBotTwitter)
 
-    // ctx.plugin(valorantPlugin)
-
-    logger.success('KBot 内置插件加载完毕')
+    logger.success('Edison 内置插件加载完毕')
   }
 }

@@ -42,13 +42,13 @@ export function apply(context: Context, config: IConfig) {
     },
   })
 
-  const ctx = context.isolate(['http'])
+  const ctx = context.isolate('http')
   const bearer_token = config.dynamic.bearer_key;
 
   ctx.http = context.http.extend({
     headers: {
       'User-Agent': 'PostmanRuntime/7.31.0',
-      'Authorization': `bearer ${bearer_token}`,
+      'Authorization': `Bearer ${bearer_token}`,
       ...config.quester.headers,
     },
     ...config.quester,

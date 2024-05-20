@@ -18,6 +18,7 @@ import { getTwitterTweets } from '../utils'
 import GeneratePath from '../../../config'
 import { listen } from './listen'
 import { dynamicStrategy } from './dynamic.strategy'
+import { twitterToken } from './common'
 
 declare module '..' {
   interface TwitterChannel {
@@ -63,7 +64,7 @@ export async function apply(ctx: Context, config: IConfig) {
     'twitter',
   ])
 
-  const { kbotDir, twitterDir, twitterCookiePath } = GeneratePath.getInstance(ctx.baseDir).getGeneratePathData()
+  const { edisonDir: kbotDir, twitterDir, twitterCookiePath, twitterTokenPath } = GeneratePath.getInstance(ctx.baseDir).getGeneratePathData()
 
   const fileNames = await fs.promises.readdir(kbotDir)
 
@@ -72,6 +73,11 @@ export async function apply(ctx: Context, config: IConfig) {
     await fs.promises.writeFile(
       twitterCookiePath,
       JSON.stringify({ cookies: '' }),
+      { encoding: 'utf-8' },
+    )
+    await fs.promises.writeFile(
+      twitterTokenPath,
+      JSON.stringify({ bearer_token: '' }),
       { encoding: 'utf-8' },
     )
   }
@@ -116,6 +122,11 @@ export async function apply(ctx: Context, config: IConfig) {
       '-ck <cookie:string> 设置 twitter cookie, 请在登录 twitter 后使用浏览器的开发者工具获取',
       { authority: config.authority },
     )
+    .option(
+      'token',
+      '-tk <token:string> 设置 twitter api token',
+      { authority: config.authority },
+    )
     .option('list', '-l 展示当前订阅 twitter 博主列表', {
       authority: config.authority,
     })
@@ -126,7 +137,8 @@ export async function apply(ctx: Context, config: IConfig) {
 
       return dynamicStrategy({ session, options }, list, ctx, config)
     })
-
+  
+  // 检查Cookie
   try {
     const cookieJson = await fs.promises.readFile(
       twitterCookiePath,
@@ -143,6 +155,25 @@ export async function apply(ctx: Context, config: IConfig) {
   }
   catch {
     logger.warn('未检测到 cookie, 请使用 twitter --ck <cookie> 设置')
+  }
+
+  // 检查Token
+  try {
+    const tokenJson = await fs.promises.readFile(
+      twitterTokenPath,
+      { encoding: 'utf-8' },
+    )
+    const token = JSON.parse(tokenJson)
+    if (!token) {
+      logger.warn('未检测到 token, 请使用 twitter --tk <token> 设置')
+    }
+    else {
+      ctx.http.config.headers['Authorization'] = `Bearer ${token['bearer_token']}`
+      config.bearer_key = token['bearer_token']
+    }
+  }
+  catch {
+    logger.warn('未检测到 token, 请使用 twitter --tk <token> 设置')
   }
 
   logger.info(`Twitter监听间隔 ${config.interval * 1000}`)
