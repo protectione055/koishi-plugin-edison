@@ -1,0 +1,54 @@
+{
+  "name": "koishi-plugin-edison",
+  "version": "0.1.0",
+  "description": "A twitter subscription plugin for koishi",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/protectione055/koishi-plugin-edison"
+  },
+  "keywords": [
+    "edison",
+    "twitter"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "scripts": {
+    "build:console": "koishi-console build"
+  },
+  "koishi": {
+    "description": {
+      "zh": "推特订阅插件",
+      "en": "A twitter subscription plugin for koishi"
+    },
+    "service": {
+      "required": [
+        "database"
+      ]
+    }
+  },
+  "peerDependencies": {
+    "@koishijs/plugin-admin": "*",
+    "koishi": "^4.13.6",
+    "koishi-plugin-downloads": "*",
+    "koishi-plugin-puppeteer": "*"
+  },
+  "peerDependenciesMeta": {
+    "koishi-plugin-puppeteer": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "qs": "^6.11.2",
+    "systeminformation": "^5.21.1"
+  },
+  "devDependencies": {
+    "@koishijs/client": "^5.13.3",
+    "@types/qs": "^6.9.7",
+    "@types/systeminformation": "^3.54.1"
+  }
+}
