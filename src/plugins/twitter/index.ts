@@ -42,7 +42,7 @@ export function apply(context: Context, config: IConfig) {
     },
   })
 
-  const ctx = context.isolate('http')
+  const ctx = context.isolate('http-edison-twitter')
   const bearer_token = config.dynamic.bearer_key;
 
   ctx.http = context.http.extend({
