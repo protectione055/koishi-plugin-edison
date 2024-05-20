@@ -78,35 +78,13 @@ svg text {
   <text x="0" y="70%"> Koishi-Plugin-edison </text>
 </svg>
 
-# KBot v1.1.2 更新日志
-
-## Note
-
-- 修复 \`guildmanage\` 插件问题
-- 修复 \`bilibili\` 插件问题
-- 修复 \`twitter\` 插件问题
-- 重构文件路径方法
-- 更新 \`download\` 的路径下载
-- 更新插件首页显示小动画, 以及部分内容
-
-## Bug Fix
-
-- 修复 \`guildmanage\` 因为 ref 绑定错误导致对应按钮无法打开
-- 修复 \`guildmanage\` 监听 \`message\` 问题
-- 修复文件路径, 使用单例模式来创建对应路径, 以及增加判断 \`edison\` 文件夹
-- 修复 \`bilibili\` 增加在 \`pptr\` 中, 跳转到网页后使用自带 \`cookie\` 的功能
-- 修复 \`bilibili\` 对于 \`vup\` 以及 \`danmu\` 功能, 在关闭图片功能中, 无法正确使用的情况, 增加了单独使用图片的方法
-- 在 \`bilibili\` 中, 增加 \`try-catch\` 对于渲染动态的报错捕获
+# Edison v0.1.2 更新日志
 
 ## Feature
 
-- 更改 \`download\` 文件下载的对应文件路径包
-- 更新插件配置页面的小动画以及部分内容
+- 通过bearer token 获取 \`twitter\` 动态
 
-详细更新日志请看: [Release](https://github.com/Kabuda-czh/koishi-plugin-edison/releases/tag/1.1.2)
-
-## 如果你觉得这个插件还不错, 可以考虑支持一下我
-## [爱发电](https://afdian.net/a/kbd-dev)
+## 这个插件在kbot基础上修改而来，特此感谢原作者
 `
 
 interface IPluginEnableConfig {
