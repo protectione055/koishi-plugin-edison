@@ -14,11 +14,8 @@
   - [功能](#功能)
   - [安装](#安装)
   - [使用方法](#使用方法)
-  - [注意事项](#注意事项)
   - [Todo](#todo)
   - [感谢](#感谢)
-  - [借鉴](#借鉴)
-  - [License](#license)
 
 ## 功能
 
@@ -60,10 +57,11 @@
     - 查看订阅列表: `twitter -l`
       - 参数说明: 无
 
+## Todo
+
+- [ ] Puppeteer 爬取 API Playground 的 token
+- [ ] 抓取推文图片和视频
+
 ## 感谢
 
 - [koishi-plugin-kbot](https://github.com/Kabuda-czh/koishi-plugin-kbot)
-
-## 赞助
-
-- [爱发电](https://afdian.net/a/kbd-dev)
