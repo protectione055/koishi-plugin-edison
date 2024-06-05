@@ -27,7 +27,6 @@ export async function renderFunction(
   isListen = true,
 ): Promise<string> {
   try {
-    // TODO: fix this
     if (ctx.puppeteer && config.useImage)
       return renderImage(ctx, tweets, user_info)
     else
@@ -68,7 +67,7 @@ async function renderImage(ctx: Context, tweets: Tweet, user_info: UserInfo): Pr
     }
     catch (e) {
       logger.error(`Failed to get cookie info. ${e}`)
-      throw new Error('cookie 信息未找到, 请使用 --ck <cookie> 添加 cookie')
+      throw new Error('cookie 信息未找到, 请更新bearer token或查看日志')
     }
 
     cookie.cookieString.match(/([^=;\s]+)=([^=;\s]*)/g).forEach((item) => {
@@ -177,16 +176,16 @@ async function renderText(
     }
 
     return `${segment.escape(text)}`
-
-    // hasShortURL = tweet.text.includes('https://t.co')
-
-    // if (isListen && onlyMedia && media.length === 0)
-    //   return
-
-    // return `${segment.escape(text)}\n${media.reduce(
-    //   (str, httpStr) => (str += `<image url="${httpStr}" />\n`),
-    //   '',
-    // )}${hasShortURL ? '' : `\n${url}`}`
+    
+    hasShortURL = tweet.text.includes('https://t.co')
+    
+    if (isListen && onlyMedia && media.length === 0)
+      return
+    
+    return `${segment.escape(text)}\n${media.reduce(
+      (str, httpStr) => (str += `<image url="${httpStr}" />\n`),
+      '',
+    )}${hasShortURL ? '' : `\n${url}`}`
   }
   catch (err) {
     logger.error('推特文字渲染失败: ', err)

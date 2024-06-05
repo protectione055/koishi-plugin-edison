@@ -11,8 +11,12 @@
 import type { Context } from 'koishi'
 import { Quester, Schema } from 'koishi'
 import * as dynamic from './dynamic'
+import { refresh_token } from './utils'
+import { logger } from '../../basic'
 
-export interface TwitterChannel {}
+export interface TwitterChannel { }
+
+export const inject = ['puppeteer']
 
 declare module 'koishi' {
   interface Channel {
@@ -33,7 +37,7 @@ export const Config: Schema<IConfig> = Schema.object({
 })
 
 export function apply(context: Context, config: IConfig) {
-  context.guild().command('edison/twitter', 'Twitter 相关功能')
+  context.guild().command('edison/twitter', '使用 help twitter 查看功能指引')
 
   context.model.extend('channel', {
     twitter: {
@@ -42,9 +46,9 @@ export function apply(context: Context, config: IConfig) {
     },
   })
 
-  const ctx = context.isolate('http-edison-twitter')
-  const bearer_token = config.dynamic.bearer_key;
-
+  let bearer_token = config.dynamic.bearer_key;
+    
+  const ctx = context.isolate('http')
   ctx.http = context.http.extend({
     headers: {
       'User-Agent': 'PostmanRuntime/7.31.0',
@@ -55,4 +59,7 @@ export function apply(context: Context, config: IConfig) {
   })
 
   ctx.plugin(dynamic, config.dynamic)
+
+  // refresh_token(ctx, config.dynamic.cookie, dynamic.logger)
+
 }

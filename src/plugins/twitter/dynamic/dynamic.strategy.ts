@@ -89,7 +89,7 @@ export async function dynamicStrategy(
         }
 
         if (!restId.length)
-          return '未获取到对应 twitter 博主 ID 信息, 请使用 twitter --ck <cookie> 设置 cookie'
+          return '未获取到对应 twitter 博主 ID 信息, 请检查日志'
       }
 
       return dynamicStrategies[strategyName]?.(

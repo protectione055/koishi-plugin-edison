@@ -32,14 +32,15 @@ export interface IConfig {
   usePure?: boolean
   onlyMedia?: boolean
   authority: number
+  cookie?: string
   bearer_key?: string
 }
 
 export const Config: Schema<IConfig> = Schema.object({
   interval: Schema.number()
-    .description('请求之间的间隔 (秒) 注: 最低 90 秒!')
+    .description('请求之间的间隔 (秒) ，最短间隔为 1 秒')
     .default(90)
-    .min(90),
+    .min(1),
   useImage: Schema.boolean().default(false).description('是否使用图片模式 (需要 puppeteer 支持!)'),
   usePure: Schema.boolean()
     .default(false)
@@ -51,6 +52,7 @@ export const Config: Schema<IConfig> = Schema.object({
     .min(1)
     .description('设定指令的最低权限, 默认 2 级'),
   onlyMedia: Schema.boolean().default(false).description('是否只推送媒体动态'),
+  cookie: Schema.string().default('').description('Cookie'),
   bearer_key: Schema.string().default('').description('Bearer key'),
 })
 
@@ -177,6 +179,7 @@ export async function apply(ctx: Context, config: IConfig) {
   }
 
   logger.info(`Twitter监听间隔 ${config.interval * 1000}`)
+
   const generator = listen(list, getTwitterTweets, ctx, config)
   ctx.setInterval(async () => {
     await generator.next()
