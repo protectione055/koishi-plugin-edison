@@ -15,11 +15,10 @@ import { Status } from '@satorijs/protocol'
 
 import * as botBasic from './basic'
 
+import * as montagePlugin from './plugins/montage'
 import * as twitterPlugin from './plugins/twitter'
 
 import {} from 'koishi-plugin-downloads'
-
-// import * as valorantPlugin from './plugins/valorant'
 
 import GeneratePath from './config'
 import { downloadAndMoveFiles } from './plugins/utils'
@@ -95,6 +94,7 @@ interface IConfig {
   superAdminQQ?: string[]
   KBotBasic?: botBasic.IConfig
   KBotTwitter?: twitterPlugin.IConfig & IPluginEnableConfig
+  EdisonMontage?: montagePlugin.IConfig & IPluginEnableConfig
 }
 
 function pluginLoad<T>(schema: Schema<T>): Schema<T & IPluginEnableConfig> {
@@ -118,6 +118,7 @@ export const Config: Schema<IConfig> = Schema.object({
   superAdminQQ: Schema.array(String).description('超级管理员QQ号 (必填)'),
   KBotBasic: botBasic.Config,
   KBotTwitter: pluginLoad(twitterPlugin.Config).description('Twitter 动态推送 (必须要 puppeteer)'),
+  EdisonMontage: pluginLoad(montagePlugin.Config).description('Montage 图片拼接 (必须要 Canvas)'),
 })
 
 export const logger = new Logger('Edison')
@@ -206,7 +207,13 @@ export async function apply(ctx: Context, config: IConfig) {
 
     ctx.plugin(botBasic, config.KBotBasic)
 
-    ctx.plugin(twitterPlugin, config.KBotTwitter)
+    if (config.KBotTwitter.enabled) {
+      ctx.plugin(twitterPlugin, config.KBotTwitter)
+    }
+
+    if (config.EdisonMontage.enabled) {
+      ctx.plugin(montagePlugin, config.EdisonMontage)
+    }
 
     logger.success('Edison 内置插件加载完毕')
   }

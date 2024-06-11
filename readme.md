@@ -32,6 +32,13 @@
     **查看订阅列表**: 查看订阅的推特博主列表
   </details>
 
+  <details>
+
+    <summary> 图片拼接功能 </summary>
+
+    **图片批量拼接**: 发送多张图片，按照指定张数拼接起来
+  </details>
+
 ## 安装
 
 1. 下载插件运行平台 [Koishi](https://koishi.chat/)
